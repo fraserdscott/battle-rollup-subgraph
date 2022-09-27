@@ -51,3 +51,44 @@ export class Account extends Entity {
     this.set("balance", Value.fromBigInt(value));
   }
 }
+
+export class Rollup extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Rollup entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Rollup must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Rollup", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Rollup | null {
+    return changetype<Rollup | null>(store.get("Rollup", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get resolved(): boolean {
+    let value = this.get("resolved");
+    return value!.toBoolean();
+  }
+
+  set resolved(value: boolean) {
+    this.set("resolved", Value.fromBoolean(value));
+  }
+}

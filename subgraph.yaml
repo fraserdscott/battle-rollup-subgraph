@@ -20,6 +20,8 @@ dataSources:
       callHandlers:
         - function: deposit()
           handler: handleDeposit
+        - function: resolve(bytes32,bytes)
+          handler: handleResolve
         - function: withdraw(address,uint256,bytes32[],bool[])
           handler: handleWithdraw
       file: ./src/mapping.ts
