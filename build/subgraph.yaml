@@ -20,4 +20,6 @@ dataSources:
       callHandlers:
         - function: deposit()
           handler: handleDeposit
+        - function: withdraw(address,uint256,bytes32[],bool[])
+          handler: handleWithdraw
       file: Rollup/Rollup.wasm

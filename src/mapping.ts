@@ -1,5 +1,5 @@
 import { Account } from "../generated/schema";
-import { DepositCall } from "../generated/Rollup/Rollup"
+import { DepositCall, WithdrawCall } from "../generated/Rollup/Rollup"
 import { BigInt } from "@graphprotocol/graph-ts";
 
 let ZERO = BigInt.fromI32(0);
@@ -23,3 +23,12 @@ export function handleDeposit(call: DepositCall): void {
 
   entity.save();
 }
+
+export function handleWithdraw(call: WithdrawCall): void {
+  let entity = getOrCreateAccount(call.from.toHexString());
+
+  entity.balance -= call.inputs.value;
+
+  entity.save();
+}
+
