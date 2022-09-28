@@ -3,6 +3,26 @@ type Account @entity {
   balance: BigInt!
 }
 
+interface Event {
+  id: ID!
+  timestamp: BigInt!
+}
+
+type DepositEvent implements Event @entity {
+  id: ID!
+  to: Account!
+  value: BigInt!
+  timestamp: BigInt!
+}
+
+type TransferEvent implements Event @entity {
+  id: ID!
+  from: Account!
+  to: Account!
+  value: BigInt!
+  timestamp: BigInt!
+}
+
 type Rollup @entity {
   id: ID!
   resolved: Boolean!
