@@ -1,6 +1,6 @@
 import { Account, Rollup } from "../generated/schema";
 import { Deposit, Transfer, Resolve, Withdraw } from "../generated/Rollup/Rollup"
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 
 let ZERO = BigInt.fromI32(0);
 
@@ -40,8 +40,10 @@ export function handleTransfer(event: Transfer): void {
   let from = getOrCreateAccount(event.params.from.toHexString());
   let to = getOrCreateAccount(event.params.to.toHexString());
 
-  // from.balance -= event.params.value;
-  // to.balance += event.params.value;
+  let value: BigInt = BigInt.fromUnsignedBytes(Bytes.fromUint8Array(event.params.value.reverse()));
+
+  from.balance -= value;
+  to.balance += value;
 
   from.save();
   to.save();
