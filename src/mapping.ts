@@ -1,5 +1,5 @@
 import { Account, Rollup } from "../generated/schema";
-import { DepositCall, ResolveCall, WithdrawCall } from "../generated/Rollup/Rollup"
+import { Deposit, Transfer, Resolve, Withdraw } from "../generated/Rollup/Rollup"
 import { BigInt } from "@graphprotocol/graph-ts";
 
 let ZERO = BigInt.fromI32(0);
@@ -28,15 +28,26 @@ export function getOrCreateRollup(
   return entity;
 }
 
-export function handleDeposit(call: DepositCall): void {
-  let entity = getOrCreateAccount(call.from.toHexString());
+export function handleDeposit(event: Deposit): void {
+  let entity = getOrCreateAccount(event.params.to.toHexString());
 
-  entity.balance += call.transaction.value;
+  entity.balance += event.params.value;
 
   entity.save();
 }
 
-export function handleResolve(): void {
+export function handleTransfer(event: Transfer): void {
+  let from = getOrCreateAccount(event.params.from.toHexString());
+  let to = getOrCreateAccount(event.params.to.toHexString());
+
+  // from.balance -= event.params.value;
+  // to.balance += event.params.value;
+
+  from.save();
+  to.save();
+}
+
+export function handleResolve(event: Resolve): void {
   let entity = getOrCreateRollup("0");
 
   entity.resolved = true;
@@ -44,10 +55,10 @@ export function handleResolve(): void {
   entity.save();
 }
 
-export function handleWithdraw(call: WithdrawCall): void {
-  let entity = getOrCreateAccount(call.from.toHexString());
+export function handleWithdraw(event: Withdraw): void {
+  let entity = getOrCreateAccount(event.params.from.toHexString());
 
-  entity.balance -= call.inputs.value;
+  entity.balance -= event.params.value;
 
   entity.save();
 }

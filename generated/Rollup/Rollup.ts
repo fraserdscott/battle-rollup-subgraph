@@ -10,6 +10,90 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class Deposit extends ethereum.Event {
+  get params(): Deposit__Params {
+    return new Deposit__Params(this);
+  }
+}
+
+export class Deposit__Params {
+  _event: Deposit;
+
+  constructor(event: Deposit) {
+    this._event = event;
+  }
+
+  get to(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get value(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
+export class Resolve extends ethereum.Event {
+  get params(): Resolve__Params {
+    return new Resolve__Params(this);
+  }
+}
+
+export class Resolve__Params {
+  _event: Resolve;
+
+  constructor(event: Resolve) {
+    this._event = event;
+  }
+}
+
+export class Transfer extends ethereum.Event {
+  get params(): Transfer__Params {
+    return new Transfer__Params(this);
+  }
+}
+
+export class Transfer__Params {
+  _event: Transfer;
+
+  constructor(event: Transfer) {
+    this._event = event;
+  }
+
+  get from(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get to(): Bytes {
+    return this._event.parameters[1].value.toBytes();
+  }
+
+  get value(): Bytes {
+    return this._event.parameters[2].value.toBytes();
+  }
+}
+
+export class Withdraw extends ethereum.Event {
+  get params(): Withdraw__Params {
+    return new Withdraw__Params(this);
+  }
+}
+
+export class Withdraw__Params {
+  _event: Withdraw;
+
+  constructor(event: Withdraw) {
+    this._event = event;
+  }
+
+  get from(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get value(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class Rollup extends ethereum.SmartContract {
   static bind(address: Address): Rollup {
     return new Rollup("Rollup", address);
@@ -164,6 +248,44 @@ export class Rollup extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
+  hashThree(hasher: Address, one: Bytes, two: Bytes, three: Bytes): Bytes {
+    let result = super.call(
+      "hashThree",
+      "hashThree(address,bytes32,bytes32,bytes32):(bytes32)",
+      [
+        ethereum.Value.fromAddress(hasher),
+        ethereum.Value.fromFixedBytes(one),
+        ethereum.Value.fromFixedBytes(two),
+        ethereum.Value.fromFixedBytes(three)
+      ]
+    );
+
+    return result[0].toBytes();
+  }
+
+  try_hashThree(
+    hasher: Address,
+    one: Bytes,
+    two: Bytes,
+    three: Bytes
+  ): ethereum.CallResult<Bytes> {
+    let result = super.tryCall(
+      "hashThree",
+      "hashThree(address,bytes32,bytes32,bytes32):(bytes32)",
+      [
+        ethereum.Value.fromAddress(hasher),
+        ethereum.Value.fromFixedBytes(one),
+        ethereum.Value.fromFixedBytes(two),
+        ethereum.Value.fromFixedBytes(three)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBytes());
+  }
+
   hasher(): Address {
     let result = super.call("hasher", "hasher():(address)", []);
 
@@ -284,16 +406,16 @@ export class ConstructorCall__Inputs {
     this._call = call;
   }
 
-  get levels(): BigInt {
+  get _expiry(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get hasher(): Address {
-    return this._call.inputValues[1].value.toAddress();
+  get levels(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
   }
 
-  get _expiry(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
+  get hasher(): Address {
+    return this._call.inputValues[2].value.toAddress();
   }
 }
 
@@ -361,6 +483,40 @@ export class ResolveCall__Outputs {
   _call: ResolveCall;
 
   constructor(call: ResolveCall) {
+    this._call = call;
+  }
+}
+
+export class TransferCall extends ethereum.Call {
+  get inputs(): TransferCall__Inputs {
+    return new TransferCall__Inputs(this);
+  }
+
+  get outputs(): TransferCall__Outputs {
+    return new TransferCall__Outputs(this);
+  }
+}
+
+export class TransferCall__Inputs {
+  _call: TransferCall;
+
+  constructor(call: TransferCall) {
+    this._call = call;
+  }
+
+  get to(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
+  }
+
+  get value(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class TransferCall__Outputs {
+  _call: TransferCall;
+
+  constructor(call: TransferCall) {
     this._call = call;
   }
 }

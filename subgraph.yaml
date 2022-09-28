@@ -7,7 +7,7 @@ dataSources:
     network: localhost
     source:
       abi: Rollup
-      address: "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -17,11 +17,13 @@ dataSources:
       abis:
         - name: Rollup
           file: ./out/Rollup.sol/Rollup.json
-      callHandlers:
-        - function: deposit()
+      eventHandlers:
+        - event: Deposit(address,uint256)
           handler: handleDeposit
-        - function: resolve(bytes32,bytes)
+        - event: Transfer(address,bytes32,bytes32)
+          handler: handleTransfer
+        - event: Resolve()
           handler: handleResolve
-        - function: withdraw(address,uint256,bytes32[],bool[])
+        - event: Withdraw(address,uint256)
           handler: handleWithdraw
       file: ./src/mapping.ts
