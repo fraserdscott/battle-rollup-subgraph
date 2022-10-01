@@ -43,16 +43,20 @@ export function handleDeposit(event: Deposit): void {
 }
 
 export function handleTransfer(event: Transfer): void {
+  const toAddress = event.params.to.toHexString().slice(0, 2).concat(event.params.to.toHexString().slice(26));
   let from = getOrCreateAccount(event.params.from.toHexString());
-  let to = getOrCreateAccount(event.params.to.toHexString().slice(20));
+  let to = getOrCreateAccount(toAddress);
   let transferEvent = new TransferEvent(event.transaction.hash.toHexString());
 
   let value: BigInt = BigInt.fromUnsignedBytes(Bytes.fromUint8Array(event.params.value.reverse()));
-  from.balance -= value;
-  to.balance += value;
+  const success = value.le(from.balance);
+  if (success && from.id != to.id) {
+    from.balance -= value;
+    to.balance += value;
+  }
 
   transferEvent.from = event.params.from.toHexString();
-  transferEvent.to = event.params.to.toHexString().slice(20);
+  transferEvent.to = toAddress;
   transferEvent.value = value
   transferEvent.timestamp = event.block.timestamp;
 

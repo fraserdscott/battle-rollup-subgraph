@@ -1,26 +1,28 @@
 type Account @entity {
   id: ID!
   balance: BigInt!
+  deposits: DepositEvent! @derivedFrom(field: "to")
 }
 
 interface Event {
   id: ID!
+  to: Account!
   timestamp: BigInt!
 }
 
 type DepositEvent implements Event @entity {
   id: ID!
+  timestamp: BigInt!
   to: Account!
   value: BigInt!
-  timestamp: BigInt!
 }
 
 type TransferEvent implements Event @entity {
   id: ID!
+  timestamp: BigInt!
   from: Account!
   to: Account!
   value: BigInt!
-  timestamp: BigInt!
 }
 
 type Rollup @entity {

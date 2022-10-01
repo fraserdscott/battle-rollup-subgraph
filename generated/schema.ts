@@ -50,6 +50,15 @@ export class Account extends Entity {
   set balance(value: BigInt) {
     this.set("balance", Value.fromBigInt(value));
   }
+
+  get deposits(): string {
+    let value = this.get("deposits");
+    return value!.toString();
+  }
+
+  set deposits(value: string) {
+    this.set("deposits", Value.fromString(value));
+  }
 }
 
 export class DepositEvent extends Entity {
@@ -83,6 +92,15 @@ export class DepositEvent extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
   get to(): string {
     let value = this.get("to");
     return value!.toString();
@@ -99,15 +117,6 @@ export class DepositEvent extends Entity {
 
   set value(value: BigInt) {
     this.set("value", Value.fromBigInt(value));
-  }
-
-  get timestamp(): BigInt {
-    let value = this.get("timestamp");
-    return value!.toBigInt();
-  }
-
-  set timestamp(value: BigInt) {
-    this.set("timestamp", Value.fromBigInt(value));
   }
 }
 
@@ -142,6 +151,15 @@ export class TransferEvent extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get timestamp(): BigInt {
+    let value = this.get("timestamp");
+    return value!.toBigInt();
+  }
+
+  set timestamp(value: BigInt) {
+    this.set("timestamp", Value.fromBigInt(value));
+  }
+
   get from(): string {
     let value = this.get("from");
     return value!.toString();
@@ -169,13 +187,13 @@ export class TransferEvent extends Entity {
     this.set("value", Value.fromBigInt(value));
   }
 
-  get timestamp(): BigInt {
-    let value = this.get("timestamp");
-    return value!.toBigInt();
+  get success(): boolean {
+    let value = this.get("success");
+    return value!.toBoolean();
   }
 
-  set timestamp(value: BigInt) {
-    this.set("timestamp", Value.fromBigInt(value));
+  set success(value: boolean) {
+    this.set("success", Value.fromBoolean(value));
   }
 }
 
